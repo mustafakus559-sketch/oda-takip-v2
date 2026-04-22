@@ -9,50 +9,33 @@ const USERS = [
 ];
 
 const ROOM_DEFINITIONS = [
-  {
-    roomNo: "101",
-    block: "A",
-    floor: "1",
-    students: [
-      "Ali Uçak",
-      "Mehmet Kaya",
-      "Ahmet Yıldız",
-      "Yusuf Demir",
-    ],
-  },
-  {
-    roomNo: "102",
-    block: "A",
-    floor: "1",
-    students: [
-      "Hasan Çelik",
-      "Murat Arslan",
-      "Emre Şahin",
-      "Ömer Koç",
-    ],
-  },
-  {
-    roomNo: "201",
-    block: "A",
-    floor: "2",
-    students: [
-      "Fatih Aydın",
-      "İsmail Karaca",
-      "Burak Polat",
-      "Kerem Özcan",
-    ],
-  },
-  {
-    roomNo: "202",
-    block: "A",
-    floor: "2",
-    students: [
-      "Harun Kaplan",
-      "Sami Aktaş",
-      "Enes Güneş",
-      "Talha Eren",
-    ],
-  },
+  { roomNo: "101", block: "A", floor: "1", students: ["Taha Efsa Aydın", "Yusuf Gültekin"] },
+  { roomNo: "102", block: "A", floor: "1", students: ["Taimia Kisitu", "Almat Duisen", "Janbota Byerikbol", "S M Julkarnine"] },
+  { roomNo: "201", block: "A", floor: "2", students: ["İbrahim Kaplan", "Ahmad Zia Mohammadi", "Yusuf Bayraqdarov", "Abdulilloh Hisainzoda"] },
+  { roomNo: "202", block: "A", floor: "2", students: ["Eymen Merdan", "Güngör Baki Yüksel", "Mustafa Ateş", "Zeynel Abidin Tosun"] },
+  { roomNo: "203", block: "A", floor: "2", students: ["Azizullah Mufti Zada", "Mohammad Zayaan Zehgeer", "Arimiyao Tchaasanti", "Faizanullah Rahmani"] },
+  { roomNo: "204", block: "A", floor: "2", students: ["Tilekzhan Yessengabyl", "Kanatmyrza Erkinbek Uulu", "Tamerlan Khatsaev", "Abdiasis Abdullahi Yusuf"] },
+  { roomNo: "205", block: "A", floor: "2", students: ["Muhammed Talha Ceylan", "Adil Talha Demiral", "Mehmet Enes Demiral", "Ömer Fazıl Orhan"] },
+  { roomNo: "206", block: "A", floor: "2", students: ["Conquerer Chandipwisa", "Faozan Uma", "Zeyad Mosa", "Muhammad Mukiibi"] },
+  { roomNo: "207", block: "A", floor: "2", students: ["Radwan Rofida", "Ghadeer Abdulameer Tahseen", "Moughni Mlamali Msaidie", "Shohrukh Rajabov"] },
+  { roomNo: "208", block: "A", floor: "2", students: ["Khabibullokh Abdulfattoev", "Nuriddin Zokirjon Ugli Jakbaraliev", "Yousif Khwamurad Qadir Al Jaf", "Hafiz Ijaz Ahmed"] },
+  { roomNo: "209", block: "A", floor: "2", students: ["Salih Metin", "Alper Şahin", "Enis Yiğit", "Enes Yiğit"] },
+  { roomNo: "210", block: "A", floor: "2", students: ["Ibrahim Okeny", "Idriss Djamalad Dine", "Mohamed Yehia Ahmed Aly Eiwis", "Oumar Arama"] },
+  { roomNo: "211", block: "A", floor: "2", students: ["Mahamad Wakil Ansari", "Adan Abdi Hassan Adan Abdi Hassan", "Youssouf Mohamed Waberi", "Iklil Fathul Aziz Aziz"] },
+  { roomNo: "212", block: "A", floor: "2", students: ["Abdul Waheed", "MD Obaid", "Ahmad Firdaous Bin Mohd Saleh", "Ammar Bin Mohd Satar"] },
+  { roomNo: "301", block: "A", floor: "3", students: ["Cavit Karaman", "Ali Osman Yıldız", "Ahmet Talha Çeliker"] },
+  { roomNo: "302", block: "A", floor: "3", students: ["Huzeyfe Kemal Bedirhangil", "Ahmet Yasin Yüksel", "Ömer Can Salici", "Mehmet Rıza Şahin"] },
+  { roomNo: "303", block: "A", floor: "3", students: ["Mohammed Awal Abdul Ganiyu", "Ridwan Olajide Nafiu", "Hassan Mohamed Ahmed", "Abdulrahman Ramadhan"] },
+  { roomNo: "304", block: "A", floor: "3", students: ["Abdoul Khadry Ndiaye", "Adam Bottom", "İbrahim Ayiki Rafiu", "Junaid Omar Mwachande"] },
+  { roomNo: "305", block: "A", floor: "3", students: ["Abdul Bashir Noor", "Umar Abdibaliev", "Mohamed Abdellahi Bezeid", "Mamadu Alpha Bah"] },
+  { roomNo: "306", block: "A", floor: "3", students: ["Mesud Mubarek Nureddin", "Moussa Traore", "Ahamet Badamassi Elhadji Aouta", "Abdourahmane Ag Inazoum Cisse"] },
+  { roomNo: "307", block: "A", floor: "3", students: ["Mohamad Alhlibi", "Muhammed Ashour", "Asgat Samigullin", "Said Cerrah"] },
+  { roomNo: "308", block: "A", floor: "3", students: ["Ahmet Yusuf Göçer", "İbrahim Genç", "Mustafa Özöğet", "Seyyid Ahmet Kılıçarslan"] },
+  { roomNo: "309", block: "A", floor: "3", students: ["Adilet Mussalimov", "Emil Khairoyev", "Jad Abou Ali", "Hussam Alhaddad"] },
+  { roomNo: "310", block: "A", floor: "3", students: ["Temir Polat Alankuş", "Ömer Faruk Boz"] },
+  { roomNo: "311", block: "A", floor: "3", students: ["Mohamed Alieu Bah", "Adama Deme", "Ibrahim Abdumalik Abdukerim", "Mouhamed Diop"] },
+  { roomNo: "312", block: "A", floor: "3", students: ["Mutteiullah Yousufi", "Mohamed Ali Mohamed", "Mohamad Noraiman", "Mohamed Fathi Arabi Kafo"] },
+  { roomNo: "313", block: "A", floor: "3", students: ["Hamit Seyitmehmetoğlu", "Aminul Islam", "Hasan Diab", "Elmir Sadigov"] },
 ];
 
 const CONTROL_OPTIONS = ["İyi", "Orta", "Yetersiz"];
@@ -681,3 +664,4 @@ export default function Page() {
     </div>
   );
 }
+
