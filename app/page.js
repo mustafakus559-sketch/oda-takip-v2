@@ -56,3 +56,4 @@ export default function Page() {
   );
 }
 // deploy refresh
+// zorunlu deploy yenileme
