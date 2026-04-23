@@ -12,15 +12,17 @@ export default function Page() {
   const [oda, setOda] = useState("");
   const [not, setNot] = useState("");
 
+  const [arizaVarMi, setArizaVarMi] = useState("");
+  const [arizaAciklama, setArizaAciklama] = useState("");
+
   const kaydet = async () => {
-    const { error } = await supabase
-      .from("oda_kontrolleri")
-      .insert([
-        {
-          oda_no: oda,
-          genel_not: not
-        }
-      ]);
+    const { error } = await supabase.from("oda_kontrolleri").insert([
+      {
+        oda_no: oda,
+        genel_not: not,
+        ariza_aciklama: arizaVarMi === "var" ? arizaAciklama : null,
+      },
+    ]);
 
     if (error) {
       console.log("HATA:", error);
@@ -29,6 +31,8 @@ export default function Page() {
       alert("Kaydedildi");
       setOda("");
       setNot("");
+      setArizaVarMi("");
+      setArizaAciklama("");
     }
   };
 
@@ -42,19 +46,45 @@ export default function Page() {
         onChange={(e) => setOda(e.target.value)}
       />
 
-      <br /><br />
+      <br />
+      <br />
 
       <textarea
-        placeholder="Not"
+        placeholder="Genel Not"
         value={not}
         onChange={(e) => setNot(e.target.value)}
       />
 
-      <br /><br />
+      <br />
+      <br />
+
+      <p>Odada herhangi bir arıza var mı?</p>
+
+      <select
+        value={arizaVarMi}
+        onChange={(e) => setArizaVarMi(e.target.value)}
+      >
+        <option value="">Seçiniz</option>
+        <option value="yok">Yok</option>
+        <option value="var">Var</option>
+      </select>
+
+      <br />
+      <br />
+
+      {arizaVarMi === "var" && (
+        <>
+          <textarea
+            placeholder="Arıza açıklaması yazınız..."
+            value={arizaAciklama}
+            onChange={(e) => setArizaAciklama(e.target.value)}
+          />
+          <br />
+          <br />
+        </>
+      )}
 
       <button onClick={kaydet}>Kaydet</button>
     </div>
   );
 }
-const [arizaVarMi, setArizaVarMi] = useState("");
-const [arizaAciklama, setArizaAciklama] = useState("");
