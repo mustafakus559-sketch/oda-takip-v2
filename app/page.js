@@ -4,8 +4,8 @@ import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
-  "https://wsxjninwdexymvnxvfs.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzeGpuaW53ZGV4eXhtdm52eGZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDczNzEsImV4cCI6MjA5MjUyMzM3MX0.NCMWuOeC-vCpZAV0MaeZ6enVU2JDaVXwPNmKF7T2v0o"
+  "https://wsxjninwdexyxmvnvxfs.supabase.co",
+  "sb_publishable_wA4IcyUd-4UaBkZ2UPvLkQ_xuElu29a"
 );
 
 export default function Page() {
@@ -18,16 +18,15 @@ export default function Page() {
       .insert([
         {
           oda_no: oda,
-          genel_not: not,
-          kontrol_eden: "Mustafa Kuş",
-        },
+          genel_not: not
+        }
       ]);
 
     if (error) {
+      console.log("HATA:", error);
       alert("Hata oluştu");
-      console.log(error);
     } else {
-      alert("Kayıt başarılı");
+      alert("Kaydedildi");
       setOda("");
       setNot("");
     }
