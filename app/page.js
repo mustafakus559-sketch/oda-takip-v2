@@ -56,3 +56,5 @@ export default function Page() {
     </div>
   );
 }
+const [arizaVarMi, setArizaVarMi] = useState("");
+const [arizaAciklama, setArizaAciklama] = useState("");
