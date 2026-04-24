@@ -243,10 +243,6 @@ const fetchRecordsFromSupabase = async () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("oda_kontrol_records", JSON.stringify(records));
-  }, [records]);
-
-  useEffect(() => {
     if (!currentUser) return;
 
     setForm((prev) => ({
