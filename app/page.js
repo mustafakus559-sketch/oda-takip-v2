@@ -68,6 +68,41 @@ const emptyForm = {
 const isoDate = () => new Date().toISOString().split("T")[0];
 const timeNow = () => new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
 
+function studentKey(s) {
+  return `${s.oda}-${s.ad}-${s.soyad}`;
+}
+
+function cleanCsv(value) {
+  return String(value || "").replaceAll("\n", " / ");
+}
+
+function calculateRisk(r) {
+  let score = 100;
+  if (r.arizaVarMi === "var") score -= 20;
+  if (r.guvenlikDurumu === "var") score -= 25;
+  if (r.odaTemizlik === "orta") score -= 10;
+  if (r.odaTemizlik === "kotu") score -= 20;
+  if (r.odaDuzeni === "orta") score -= 8;
+  if (r.odaDuzeni === "kotu") score -= 15;
+  if (r.yatakDuzeni === "orta") score -= 6;
+  if (r.yatakDuzeni === "kotu") score -= 12;
+  if (r.genelTemizlik === "orta") score -= 8;
+  if (r.genelTemizlik === "kotu") score -= 15;
+  return Math.max(score, 0);
+}
+
+function riskColor(score) {
+  if (score >= 80) return "#22c55e";
+  if (score >= 50) return "#f59e0b";
+  return "#ef4444";
+}
+
+function riskLabel(score) {
+  if (score >= 80) return "İyi";
+  if (score >= 50) return "Takip Gerekli";
+  return "Kritik";
+}
+
 export default function Page() {
   const [user, setUser] = useState(null);
   const [login, setLogin] = useState({ username: "", password: "" });
@@ -83,6 +118,9 @@ export default function Page() {
 
   const roomStudents = useMemo(() => STUDENTS.filter((s) => s.oda === room), [room]);
   const roomRecords = useMemo(() => records.filter((r) => String(r.room) === String(room)), [records, room]);
+
+  const issueCount = records.filter((r) => calculateRisk(r) < 80).length;
+  const criticalCount = records.filter((r) => calculateRisk(r) < 50).length;
 
   useEffect(() => {
     const saved = localStorage.getItem("oda_kontrol_user");
@@ -104,6 +142,7 @@ export default function Page() {
         talepAciklama: "",
       };
     });
+
     setStudentChecks((prev) => ({ ...prepared, ...prev }));
     setSelectedStudentKey(roomStudents[0] ? studentKey(roomStudents[0]) : null);
   }, [room]);
@@ -158,7 +197,9 @@ export default function Page() {
     setLogin({ username: "", password: "" });
   };
 
-  const update = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
+  const update = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
 
   const updateStudentCheck = (key, field, value) => {
     setStudentChecks((prev) => ({
@@ -171,13 +212,11 @@ export default function Page() {
   };
 
   const buildStudentSummary = () => {
-    const lines = roomStudents.map((s, index) => {
+    return roomStudents.map((s, index) => {
       const key = studentKey(s);
       const c = studentChecks[key] || {};
       return `${index + 1}. ${s.ad} ${s.soyad} | Kontrol: ${c.kontrolEdildi ? "Evet" : "Hayır"} | Not: ${c.not || "-"} | Sağlık: ${c.saglik || "-"} | Özel Durum: ${c.ozelDurum || "yok"} ${c.ozelDurumAciklama || ""} | Talep/Şikayet: ${c.talep || "yok"} ${c.talepAciklama || ""}`;
-    });
-
-    return lines.join("\n");
+    }).join("\n");
   };
 
   const save = async () => {
@@ -223,12 +262,15 @@ export default function Page() {
 
   const downloadExcel = () => {
     const rows = [
-      ["Oda", "Tarih", "Saat", "Kontrol Eden", "Kontrol Türü", "Dönem", "Temizlik", "Düzen", "Yatak", "Genel Temizlik", "Arıza", "Güvenlik", "Not"],
-      ...records.map((r) => [
-        r.room, r.tarih, r.saat, r.kontrolEden, r.kontrolTuru, r.donem,
-        r.odaTemizlik, r.odaDuzeni, r.yatakDuzeni, r.genelTemizlik,
-        r.arizaVarMi, r.guvenlikDurumu, cleanCsv(r.genelNot),
-      ]),
+      ["Oda", "Tarih", "Saat", "Kontrol Eden", "Kontrol Türü", "Dönem", "Risk Skoru", "Risk Durumu", "Temizlik", "Düzen", "Yatak", "Genel Temizlik", "Arıza", "Güvenlik", "Not"],
+      ...records.map((r) => {
+        const risk = calculateRisk(r);
+        return [
+          r.room, r.tarih, r.saat, r.kontrolEden, r.kontrolTuru, r.donem,
+          risk, riskLabel(risk), r.odaTemizlik, r.odaDuzeni, r.yatakDuzeni,
+          r.genelTemizlik, r.arizaVarMi, r.guvenlikDurumu, cleanCsv(r.genelNot),
+        ];
+      }),
     ];
 
     const csv = rows.map((row) => row.map((v) => `"${String(v ?? "").replaceAll('"', '""')}"`).join(";")).join("\n");
@@ -244,16 +286,6 @@ export default function Page() {
   const printReport = () => {
     window.print();
   };
-
-  const issueCount = records.filter(
-    (r) =>
-      r.arizaVarMi === "var" ||
-      r.guvenlikDurumu === "var" ||
-      r.odaTemizlik === "orta" ||
-      r.odaTemizlik === "kotu" ||
-      r.odaDuzeni === "orta" ||
-      r.odaDuzeni === "kotu"
-  ).length;
 
   const selectedStudent = roomStudents.find((s) => studentKey(s) === selectedStudentKey);
   const selectedCheck = selectedStudentKey ? studentChecks[selectedStudentKey] || {} : {};
@@ -342,10 +374,19 @@ export default function Page() {
               <Info title="Takip Gerektiren" value={isAdmin ? issueCount : "-"} color="#ef4444" />
             </div>
 
+            {isAdmin && (
+              <div style={styles.cardsGrid}>
+                <Info title="Kritik Kayıt" value={criticalCount} color="#dc2626" />
+                <Info title="Arıza Bildirimi" value={records.filter((r) => r.arizaVarMi === "var").length} color="#ef4444" />
+                <Info title="Güvenlik Uyarısı" value={records.filter((r) => r.guvenlikDurumu === "var").length} color="#ef4444" />
+                <Info title="Temizlik Takibi" value={records.filter((r) => r.odaTemizlik === "orta" || r.odaTemizlik === "kotu").length} color="#f59e0b" />
+              </div>
+            )}
+
             <div style={styles.card}>
               <h2 style={styles.cardTitle}>Sistem Özeti</h2>
               <p style={styles.muted}>
-                Bu panel üzerinden oda kontrolleri yapılabilir, öğrenciler oda bazında takip edilebilir ve yönetici hesabı ile yapılan kontroller raporlanabilir.
+                Bu panel üzerinden oda kontrolleri yapılabilir, öğrenciler oda bazında takip edilebilir ve yönetici hesabı ile yapılan kontroller risk durumuna göre raporlanabilir.
               </p>
             </div>
           </>
@@ -528,9 +569,9 @@ export default function Page() {
 
             <div style={styles.cardsGrid}>
               <Info title="Toplam Kayıt" value={records.length} color="#0b3d91" />
+              <Info title="Takip Gerekli" value={issueCount} color="#f59e0b" />
+              <Info title="Kritik Kayıt" value={criticalCount} color="#ef4444" />
               <Info title="Arıza Bildirimi" value={records.filter((r) => r.arizaVarMi === "var").length} color="#ef4444" />
-              <Info title="Güvenlik Uyarısı" value={records.filter((r) => r.guvenlikDurumu === "var").length} color="#ef4444" />
-              <Info title="Orta/Kötü Temizlik" value={records.filter((r) => r.odaTemizlik === "orta" || r.odaTemizlik === "kotu").length} color="#f59e0b" />
             </div>
 
             <div style={styles.printArea}>
@@ -557,14 +598,6 @@ export default function Page() {
   );
 }
 
-function studentKey(s) {
-  return `${s.oda}-${s.ad}-${s.soyad}`;
-}
-
-function cleanCsv(value) {
-  return String(value || "").replaceAll("\n", " / ");
-}
-
 function Menu({ icon, label, id, menu, setMenu }) {
   return (
     <button style={menu === id ? styles.menuActive : styles.menuButton} onClick={() => setMenu(id)}>
@@ -583,12 +616,20 @@ function Info({ title, value, color }) {
 }
 
 function Record({ r }) {
+  const risk = calculateRisk(r);
   return (
-    <div style={styles.record}>
-      <b>Oda {r.room}</b> — {r.tarih} {r.saat}<br />
+    <div style={{ ...styles.record, borderLeft: `7px solid ${riskColor(risk)}` }}>
+      <div style={styles.recordTop}>
+        <b>Oda {r.room}</b>
+        <span style={{ ...styles.riskBadge, background: riskColor(risk) }}>
+          {riskLabel(risk)} · {risk}
+        </span>
+      </div>
+      {r.tarih} {r.saat}<br />
       Kontrol Eden: {r.kontrolEden}<br />
       Tür: {r.kontrolTuru} · Dönem: {r.donem}<br />
-      Temizlik: {r.odaTemizlik} · Düzen: {r.odaDuzeni} · Arıza: {r.arizaVarMi} · Güvenlik: {r.guvenlikDurumu}<br />
+      Temizlik: {r.odaTemizlik} · Düzen: {r.odaDuzeni} · Yatak: {r.yatakDuzeni}<br />
+      Arıza: {r.arizaVarMi} · Güvenlik: {r.guvenlikDurumu}<br />
       Not: <pre style={styles.notePre}>{r.genelNot || "-"}</pre>
     </div>
   );
@@ -917,6 +958,20 @@ const styles = {
     marginBottom: 12,
     lineHeight: 1.8,
     background: "#fbfdff",
+  },
+  recordTop: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: 12,
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  riskBadge: {
+    color: "white",
+    borderRadius: 999,
+    padding: "5px 10px",
+    fontWeight: 900,
+    fontSize: 13,
   },
   notePre: {
     whiteSpace: "pre-wrap",
