@@ -342,31 +342,77 @@ function Text({ value, onChange, placeholder }) {
   return <textarea style={styles.textarea} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
 }
 
-const styles = {
-  loginPage: { minHeight: "100vh", display: "grid", gridTemplateColumns: "1.2fr .8fr", background: "#eef2f6", padding: 36, gap: 28 },
-  loginHero: { background: "linear-gradient(135deg,#082b6f,#0d47a1)", color: "white", borderRadius: 28, padding: 54, display: "flex", flexDirection: "column", justifyContent: "center" },
-  logoText: { fontSize: 58, fontWeight: 900 },
-  loginCard: { background: "white", borderRadius: 28, padding: 38, alignSelf: "center", boxShadow: "0 15px 40px rgba(0,0,0,.12)" },
-  app: { minHeight: "100vh", display: "flex", background: "#eef2f6" },
-  sidebar: { width: 260, background: "#082b6f", color: "white", padding: 24, position: "fixed", top: 0, bottom: 0, left: 0 },
-  sideLogo: { fontSize: 42, fontWeight: 900, color: "#f59e0b" },
-  sideTitle: { marginBottom: 24, fontSize: 18 },
-  menuButton: { width: "100%", padding: 14, marginBottom: 10, border: 0, borderRadius: 12, background: "rgba(255,255,255,.12)", color: "white", textAlign: "left", cursor: "pointer" },
-  menuActive: { width: "100%", padding: 14, marginBottom: 10, border: 0, borderRadius: 12, background: "#f59e0b", color: "white", textAlign: "left", fontWeight: 800, cursor: "pointer" },
-  logout: { width: "100%", padding: 14, marginTop: 20, border: 0, borderRadius: 12, background: "#ef4444", color: "white", cursor: "pointer" },
-  main: { marginLeft: 260, padding: 28, width: "calc(100% - 260px)" },
-  header: { background: "white", borderRadius: 24, padding: 28, marginBottom: 24, display: "flex", justifyContent: "space-between", boxShadow: "0 8px 25px rgba(0,0,0,.08)" },
-  homeButton: { padding: "12px 18px", borderRadius: 12, border: 0, background: "#082b6f", color: "white", cursor: "pointer" },
-  layout: { display: "grid", gridTemplateColumns: "330px 1fr", gap: 24 },
-  card: { background: "white", borderRadius: 24, padding: 26, marginBottom: 24, boxShadow: "0 8px 25px rgba(0,0,0,.08)" },
-  input: { width: "100%", padding: 14, margin: "8px 0 14px", borderRadius: 12, border: "1px solid #d0d5dd", boxSizing: "border-box" },
-  textarea: { width: "100%", minHeight: 90, padding: 14, margin: "8px 0 14px", borderRadius: 12, border: "1px solid #d0d5dd", boxSizing: "border-box" },
-  primaryButton: { padding: "14px 22px", border: 0, borderRadius: 12, background: "#082b6f", color: "white", fontWeight: 800, cursor: "pointer" },
-  help: { marginTop: 16, color: "#667085" },
-  two: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 },
-  student: { padding: 12, background: "#f8fafc", borderRadius: 12, marginBottom: 8, fontWeight: 700 },
-  record: { padding: 16, border: "1px solid #e5e7eb", borderRadius: 16, marginBottom: 12, lineHeight: 1.8 },
-  roomBlock: { padding: 16, border: "1px solid #e5e7eb", borderRadius: 16, marginBottom: 12 },
-  cardsGrid: { display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 },
-  info: { background: "white", borderRadius: 22, padding: 24, boxShadow: "0 8px 25px rgba(0,0,0,.08)", fontSize: 18 },
-};
+sidebar: {
+  width: 260,
+  background: "linear-gradient(180deg,#0a2a66,#0f3d8f)",
+  color: "white",
+  padding: 24,
+  position: "fixed",
+  top: 0,
+  bottom: 0,
+  left: 0,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between"
+},
+
+sideLogo: {
+  fontSize: 34,
+  fontWeight: "bold",
+  color: "#ffb100",
+  marginBottom: 5,
+  letterSpacing: 1
+},
+
+sideTitle: {
+  marginBottom: 30,
+  fontSize: 16,
+  opacity: 0.9
+},
+
+menuButton: {
+  width: "100%",
+  padding: 14,
+  marginBottom: 12,
+  border: "none",
+  borderRadius: 14,
+  background: "rgba(255,255,255,0.12)",
+  color: "white",
+  textAlign: "left",
+  cursor: "pointer",
+  transition: "all 0.2s ease"
+},
+
+menuActive: {
+  width: "100%",
+  padding: 14,
+  marginBottom: 12,
+  border: "none",
+  borderRadius: 14,
+  background: "#ff9800",
+  color: "white",
+  textAlign: "left",
+  fontWeight: "bold",
+  cursor: "pointer",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+},
+
+logout: {
+  width: "100%",
+  padding: 14,
+  marginTop: 20,
+  border: "none",
+  borderRadius: 14,
+  background: "#ff4d4d",
+  color: "white",
+  cursor: "pointer",
+  fontWeight: "bold",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+},
+
+main: {
+  marginLeft: 260,
+  padding: 30,
+  background: "#eef3fb",
+  minHeight: "100vh"
+},
