@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://wsxjninwdexyxmvnvxfs.supabase.co",
+  "sb_publishable_wA4IcyUd-4UaBkZ2UPvLkQ_xuElu29a"
+);
 
 const USERS = [
   { username: "mustafa", password: "1234", name: "Mustafa Kuş", role: "admin" },
@@ -295,7 +301,7 @@ export default function Page() {
       }
     }
 
-    for (const [key, value] of Object.entries(studentNotes)) {
+    for (const value of Object.values(studentNotes)) {
       if (value.ozelDurumVarMi === "var" && !value.ozelDurumAciklama.trim()) {
         alert("Özel durum işaretlenen öğrenci için açıklama yazınız.");
         return false;
@@ -309,18 +315,25 @@ export default function Page() {
     return true;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateForm()) return;
+
+    const now = new Date();
+    const tarih = now.toLocaleDateString("tr-TR");
+    const saat = now.toLocaleTimeString("tr-TR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
     const newRecord = {
       id: Date.now(),
       room,
-      createdAt: new Date().toISOString(),
+      createdAt: now.toISOString(),
       kontrolTuru: form.kontrolTuru,
       donem: form.donem,
       kontrolEden: form.kontrolEden,
-      tarih: form.tarih,
-      saat: form.saat,
+      tarih,
+      saat,
       odaTemizlik: form.odaTemizlik,
       odaDuzeni: form.odaDuzeni,
       yatakDuzeni: form.yatakDuzeni,
@@ -342,6 +355,41 @@ export default function Page() {
         };
       }),
     };
+
+    const { error } = await supabase.from("oda_kontrolleri").insert([
+      {
+        oda_no: room,
+        kontrol_eden: form.kontrolEden,
+        genel_not: form.genelNot,
+        oda_temizlik: form.odaTemizlik,
+        oda_duzeni: form.odaDuzeni,
+        yatak_duzeni: form.yatakDuzeni,
+        genel_temizlik: form.genelTemizlik,
+        ariza_var_mi: form.arizaVarMi,
+        guvenlik_durumu: form.guvenlikDurumu,
+        kontrol_turu: form.kontrolTuru,
+        donem: form.donem,
+        tarih,
+        saat,
+        ariza_aciklama: form.arizaVarMi === "var" ? form.arizaAciklama : null,
+        guvenlik_aciklama:
+          form.guvenlikDurumu === "var" ? form.guvenlikAciklama : null,
+        temizlik_aciklama:
+          form.odaTemizlik !== "iyi" ? form.temizlikAciklama : null,
+        duzen_aciklama:
+          form.odaDuzeni !== "iyi" ? form.duzenAciklama : null,
+        yatak_duzeni_aciklama:
+          form.yatakDuzeni !== "iyi" ? form.yatakDuzeniAciklama : null,
+        genel_temizlik_aciklama:
+          form.genelTemizlik !== "iyi" ? form.genelTemizlikAciklama : null,
+      },
+    ]);
+
+    if (error) {
+      console.log("SUPABASE HATA:", error);
+      alert("Kayıt veritabanına yazılırken hata oluştu.");
+      return;
+    }
 
     setRecords((prev) => [...prev, newRecord]);
     alert("Kayıt başarıyla eklendi.");
