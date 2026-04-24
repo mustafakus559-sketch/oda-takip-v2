@@ -76,6 +76,10 @@ export default function Page() {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [selectedStudentKey, setSelectedStudentKey] = useState(null);
+  const [studentChecks, setStudentChecks] = useState({});
+
+  const isAdmin = user?.role === "Yönetici";
 
   const roomStudents = useMemo(() => STUDENTS.filter((s) => s.oda === room), [room]);
   const roomRecords = useMemo(() => records.filter((r) => String(r.room) === String(room)), [records, room]);
@@ -85,6 +89,24 @@ export default function Page() {
     if (saved) setUser(JSON.parse(saved));
     fetchRecords();
   }, []);
+
+  useEffect(() => {
+    const prepared = {};
+    roomStudents.forEach((s) => {
+      const key = studentKey(s);
+      prepared[key] = studentChecks[key] || {
+        kontrolEdildi: false,
+        not: "",
+        saglik: "",
+        ozelDurum: "yok",
+        ozelDurumAciklama: "",
+        talep: "yok",
+        talepAciklama: "",
+      };
+    });
+    setStudentChecks((prev) => ({ ...prepared, ...prev }));
+    setSelectedStudentKey(roomStudents[0] ? studentKey(roomStudents[0]) : null);
+  }, [room]);
 
   const fetchRecords = async () => {
     const { data, error } = await supabase
@@ -136,12 +158,33 @@ export default function Page() {
     setLogin({ username: "", password: "" });
   };
 
-  const update = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const update = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
+
+  const updateStudentCheck = (key, field, value) => {
+    setStudentChecks((prev) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        [field]: value,
+      },
+    }));
+  };
+
+  const buildStudentSummary = () => {
+    const lines = roomStudents.map((s, index) => {
+      const key = studentKey(s);
+      const c = studentChecks[key] || {};
+      return `${index + 1}. ${s.ad} ${s.soyad} | Kontrol: ${c.kontrolEdildi ? "Evet" : "Hayır"} | Not: ${c.not || "-"} | Sağlık: ${c.saglik || "-"} | Özel Durum: ${c.ozelDurum || "yok"} ${c.ozelDurumAciklama || ""} | Talep/Şikayet: ${c.talep || "yok"} ${c.talepAciklama || ""}`;
+    });
+
+    return lines.join("\n");
   };
 
   const save = async () => {
     setLoading(true);
+
+    const studentSummary = buildStudentSummary();
+    const finalNote = `${form.genelNot || "-"}\n\nÖĞRENCİ KONTROL NOTLARI:\n${studentSummary}`;
 
     const { error } = await supabase.from("oda_kontrolleri").insert([{
       oda_no: room,
@@ -150,7 +193,7 @@ export default function Page() {
       donem: form.donem,
       tarih: isoDate(),
       saat: timeNow(),
-      genel_not: form.genelNot,
+      genel_not: finalNote,
       oda_temizlik: form.odaTemizlik,
       oda_duzeni: form.odaDuzeni,
       yatak_duzeni: form.yatakDuzeni,
@@ -175,7 +218,31 @@ export default function Page() {
     alert("Kayıt başarıyla kaydedildi.");
     setForm(emptyForm);
     await fetchRecords();
-    setMenu("kayitlar");
+    setMenu(isAdmin ? "kontroller" : "ana");
+  };
+
+  const downloadExcel = () => {
+    const rows = [
+      ["Oda", "Tarih", "Saat", "Kontrol Eden", "Kontrol Türü", "Dönem", "Temizlik", "Düzen", "Yatak", "Genel Temizlik", "Arıza", "Güvenlik", "Not"],
+      ...records.map((r) => [
+        r.room, r.tarih, r.saat, r.kontrolEden, r.kontrolTuru, r.donem,
+        r.odaTemizlik, r.odaDuzeni, r.yatakDuzeni, r.genelTemizlik,
+        r.arizaVarMi, r.guvenlikDurumu, cleanCsv(r.genelNot),
+      ]),
+    ];
+
+    const csv = rows.map((row) => row.map((v) => `"${String(v ?? "").replaceAll('"', '""')}"`).join(";")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tdv_oda_kontrol_raporu.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const printReport = () => {
+    window.print();
   };
 
   const issueCount = records.filter(
@@ -187,6 +254,9 @@ export default function Page() {
       r.odaDuzeni === "orta" ||
       r.odaDuzeni === "kotu"
   ).length;
+
+  const selectedStudent = roomStudents.find((s) => studentKey(s) === selectedStudentKey);
+  const selectedCheck = selectedStudentKey ? studentChecks[selectedStudentKey] || {} : {};
 
   if (!user) {
     return (
@@ -239,10 +309,16 @@ export default function Page() {
 
           <Menu icon="🏠" label="Ana Sayfa" id="ana" menu={menu} setMenu={setMenu} />
           <Menu icon="📝" label="Yeni Kontrol" id="yeni" menu={menu} setMenu={setMenu} />
-          <Menu icon="📌" label="Oda Geçmişi" id="gecmis" menu={menu} setMenu={setMenu} />
-          <Menu icon="📋" label="Kayıtlar" id="kayitlar" menu={menu} setMenu={setMenu} />
           <Menu icon="👥" label="Öğrenci Listesi" id="ogrenciler" menu={menu} setMenu={setMenu} />
-          <Menu icon="📊" label="Raporlama" id="rapor" menu={menu} setMenu={setMenu} />
+
+          {isAdmin && (
+            <>
+              <Menu icon="📌" label="Oda Geçmişi" id="gecmis" menu={menu} setMenu={setMenu} />
+              <Menu icon="✅" label="Yapılan Kontroller" id="kontroller" menu={menu} setMenu={setMenu} />
+              <Menu icon="📋" label="Kayıtlar" id="kayitlar" menu={menu} setMenu={setMenu} />
+              <Menu icon="📊" label="Raporlama" id="rapor" menu={menu} setMenu={setMenu} />
+            </>
+          )}
         </div>
 
         <button style={styles.logout} onClick={logout}>Çıkış Yap</button>
@@ -262,14 +338,14 @@ export default function Page() {
             <div style={styles.cardsGrid}>
               <Info title="Toplam Oda" value={ROOM_OPTIONS.length} color="#0b3d91" />
               <Info title="Toplam Öğrenci" value={STUDENTS.length} color="#0b3d91" />
-              <Info title="Toplam Kontrol" value={records.length} color="#f59e0b" />
-              <Info title="Takip Gerektiren" value={issueCount} color="#ef4444" />
+              <Info title="Toplam Kontrol" value={isAdmin ? records.length : "-"} color="#f59e0b" />
+              <Info title="Takip Gerektiren" value={isAdmin ? issueCount : "-"} color="#ef4444" />
             </div>
 
             <div style={styles.card}>
               <h2 style={styles.cardTitle}>Sistem Özeti</h2>
               <p style={styles.muted}>
-                Bu panel üzerinden oda kontrolleri yapılabilir, geçmiş kayıtlar incelenebilir, öğrenci listesi oda bazında görüntülenebilir ve raporlama takibi sağlanabilir.
+                Bu panel üzerinden oda kontrolleri yapılabilir, öğrenciler oda bazında takip edilebilir ve yönetici hesabı ile yapılan kontroller raporlanabilir.
               </p>
             </div>
           </>
@@ -285,18 +361,85 @@ export default function Page() {
                 </select>
                 <div style={styles.summaryBox}>
                   <b>Öğrenci Sayısı:</b> {roomStudents.length}<br />
-                  <b>Kontrol Sayısı:</b> {roomRecords.length}
+                  {isAdmin && <><b>Kontrol Sayısı:</b> {roomRecords.length}</>}
                 </div>
               </div>
 
               <div style={styles.card}>
                 <h2 style={styles.cardTitle}>Odadaki Öğrenciler</h2>
-                {roomStudents.map((s) => (
-                  <div style={styles.studentMini} key={`${s.ad}-${s.soyad}`}>
-                    {s.ad} {s.soyad}
-                  </div>
-                ))}
+                {roomStudents.map((s, index) => {
+                  const key = studentKey(s);
+                  const checked = studentChecks[key]?.kontrolEdildi || false;
+
+                  return (
+                    <div
+                      key={key}
+                      style={selectedStudentKey === key ? styles.studentMiniActive : styles.studentMini}
+                      onClick={() => setSelectedStudentKey(key)}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={(e) => updateStudentCheck(key, "kontrolEdildi", e.target.checked)}
+                        onClick={(e) => e.stopPropagation()}
+                        style={styles.checkBox}
+                      />
+                      <span style={styles.studentNumber}>{index + 1}.</span>
+                      <span>{s.ad} {s.soyad}</span>
+                    </div>
+                  );
+                })}
               </div>
+
+              {selectedStudent && (
+                <div style={styles.card}>
+                  <h2 style={styles.cardTitle}>Öğrenci Kontrol Notu</h2>
+                  <div style={styles.selectedStudentName}>
+                    {selectedStudent.ad} {selectedStudent.soyad}
+                  </div>
+
+                  <Text
+                    placeholder="Öğrenci ile ilgili kontrol notu"
+                    value={selectedCheck.not || ""}
+                    onChange={(v) => updateStudentCheck(selectedStudentKey, "not", v)}
+                  />
+
+                  <input
+                    style={styles.input}
+                    placeholder="Sağlık durumu / gözlem"
+                    value={selectedCheck.saglik || ""}
+                    onChange={(e) => updateStudentCheck(selectedStudentKey, "saglik", e.target.value)}
+                  />
+
+                  <YesNo
+                    label="Özel Durum Var mı?"
+                    value={selectedCheck.ozelDurum || "yok"}
+                    onChange={(v) => updateStudentCheck(selectedStudentKey, "ozelDurum", v)}
+                  />
+
+                  {selectedCheck.ozelDurum === "var" && (
+                    <Text
+                      placeholder="Özel durum açıklaması"
+                      value={selectedCheck.ozelDurumAciklama || ""}
+                      onChange={(v) => updateStudentCheck(selectedStudentKey, "ozelDurumAciklama", v)}
+                    />
+                  )}
+
+                  <YesNo
+                    label="İstek / Öneri / Şikayet Var mı?"
+                    value={selectedCheck.talep || "yok"}
+                    onChange={(v) => updateStudentCheck(selectedStudentKey, "talep", v)}
+                  />
+
+                  {selectedCheck.talep === "var" && (
+                    <Text
+                      placeholder="İstek / öneri / şikayet açıklaması"
+                      value={selectedCheck.talepAciklama || ""}
+                      onChange={(v) => updateStudentCheck(selectedStudentKey, "talepAciklama", v)}
+                    />
+                  )}
+                </div>
+              )}
             </div>
 
             <div style={styles.card}>
@@ -336,7 +479,7 @@ export default function Page() {
           </div>
         )}
 
-        {menu === "gecmis" && (
+        {isAdmin && menu === "gecmis" && (
           <div style={styles.card}>
             <h2 style={styles.cardTitle}>Oda Geçmişi</h2>
             <select style={styles.input} value={room} onChange={(e) => setRoom(e.target.value)}>
@@ -346,9 +489,16 @@ export default function Page() {
           </div>
         )}
 
-        {menu === "kayitlar" && (
+        {isAdmin && menu === "kontroller" && (
           <div style={styles.card}>
-            <h2 style={styles.cardTitle}>Tüm Kayıtlar</h2>
+            <h2 style={styles.cardTitle}>Yapılan Kontroller</h2>
+            {records.length === 0 ? <p style={styles.muted}>Kayıt yok.</p> : records.map((r) => <Record key={r.id} r={r} />)}
+          </div>
+        )}
+
+        {isAdmin && menu === "kayitlar" && (
+          <div style={styles.card}>
+            <h2 style={styles.cardTitle}>Kayıtlar</h2>
             {records.length === 0 ? <p style={styles.muted}>Kayıt yok.</p> : records.map((r) => <Record key={r.id} r={r} />)}
           </div>
         )}
@@ -359,28 +509,60 @@ export default function Page() {
             {ROOM_OPTIONS.map((oda) => (
               <div key={oda} style={styles.roomBlock}>
                 <h3>Oda {oda}</h3>
-                {STUDENTS.filter((s) => s.oda === oda).map((s) => (
-                  <div key={`${s.ad}-${s.soyad}`}>• {s.ad} {s.soyad}</div>
+                {STUDENTS.filter((s) => s.oda === oda).map((s, index) => (
+                  <div key={`${s.ad}-${s.soyad}`}>{index + 1}. {s.ad} {s.soyad}</div>
                 ))}
               </div>
             ))}
           </div>
         )}
 
-        {menu === "rapor" && (
+        {isAdmin && menu === "rapor" && (
           <div style={styles.card}>
             <h2 style={styles.cardTitle}>Raporlama</h2>
+
+            <div style={styles.reportActions}>
+              <button style={styles.primaryButton} onClick={downloadExcel}>Excel / CSV İndir</button>
+              <button style={styles.secondaryButton} onClick={printReport}>PDF / Yazdır</button>
+            </div>
+
             <div style={styles.cardsGrid}>
               <Info title="Toplam Kayıt" value={records.length} color="#0b3d91" />
               <Info title="Arıza Bildirimi" value={records.filter((r) => r.arizaVarMi === "var").length} color="#ef4444" />
               <Info title="Güvenlik Uyarısı" value={records.filter((r) => r.guvenlikDurumu === "var").length} color="#ef4444" />
               <Info title="Orta/Kötü Temizlik" value={records.filter((r) => r.odaTemizlik === "orta" || r.odaTemizlik === "kotu").length} color="#f59e0b" />
             </div>
+
+            <div style={styles.printArea}>
+              <h2>TDV Oda Kontrol Raporu</h2>
+              <p>Oluşturma Tarihi: {isoDate()} {timeNow()}</p>
+              {ROOM_OPTIONS.map((oda) => {
+                const list = records.filter((r) => String(r.room) === String(oda));
+                return (
+                  <div key={oda} style={styles.roomReport}>
+                    <h3>Oda {oda}</h3>
+                    {list.length === 0 ? (
+                      <p>Kayıt bulunmamaktadır.</p>
+                    ) : (
+                      list.map((r) => <Record key={r.id} r={r} />)
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </main>
     </div>
   );
+}
+
+function studentKey(s) {
+  return `${s.oda}-${s.ad}-${s.soyad}`;
+}
+
+function cleanCsv(value) {
+  return String(value || "").replaceAll("\n", " / ");
 }
 
 function Menu({ icon, label, id, menu, setMenu }) {
@@ -406,8 +588,8 @@ function Record({ r }) {
       <b>Oda {r.room}</b> — {r.tarih} {r.saat}<br />
       Kontrol Eden: {r.kontrolEden}<br />
       Tür: {r.kontrolTuru} · Dönem: {r.donem}<br />
-      Temizlik: {r.odaTemizlik} · Düzen: {r.odaDuzeni} · Arıza: {r.arizaVarMi}<br />
-      Not: {r.genelNot || "-"}
+      Temizlik: {r.odaTemizlik} · Düzen: {r.odaDuzeni} · Arıza: {r.arizaVarMi} · Güvenlik: {r.guvenlikDurumu}<br />
+      Not: <pre style={styles.notePre}>{r.genelNot || "-"}</pre>
     </div>
   );
 }
@@ -598,7 +780,7 @@ const styles = {
   },
   layout: {
     display: "grid",
-    gridTemplateColumns: "340px 1fr",
+    gridTemplateColumns: "360px 1fr",
     gap: 24,
   },
   card: {
@@ -655,6 +837,16 @@ const styles = {
     cursor: "pointer",
     fontSize: 15,
   },
+  secondaryButton: {
+    padding: "14px 22px",
+    border: 0,
+    borderRadius: 12,
+    background: "#f59e0b",
+    color: "white",
+    fontWeight: 900,
+    cursor: "pointer",
+    fontSize: 15,
+  },
   helpBox: {
     marginTop: 16,
     background: "#f8fafc",
@@ -681,6 +873,42 @@ const styles = {
     marginBottom: 8,
     fontWeight: 800,
     color: "#082b6f",
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    cursor: "pointer",
+    border: "1px solid #eef2f6",
+  },
+  studentMiniActive: {
+    padding: 12,
+    background: "#fff7ed",
+    borderRadius: 12,
+    marginBottom: 8,
+    fontWeight: 900,
+    color: "#082b6f",
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    cursor: "pointer",
+    border: "1px solid #f59e0b",
+  },
+  studentNumber: {
+    minWidth: 24,
+    color: "#f59e0b",
+    fontWeight: 900,
+  },
+  checkBox: {
+    width: 18,
+    height: 18,
+    cursor: "pointer",
+  },
+  selectedStudentName: {
+    background: "#f8fafc",
+    color: "#082b6f",
+    padding: 14,
+    borderRadius: 12,
+    fontWeight: 900,
+    marginBottom: 12,
   },
   record: {
     padding: 16,
@@ -689,6 +917,12 @@ const styles = {
     marginBottom: 12,
     lineHeight: 1.8,
     background: "#fbfdff",
+  },
+  notePre: {
+    whiteSpace: "pre-wrap",
+    fontFamily: "inherit",
+    margin: 0,
+    marginTop: 6,
   },
   roomBlock: {
     padding: 16,
@@ -718,5 +952,17 @@ const styles = {
   infoValue: {
     fontSize: 36,
     fontWeight: 900,
+  },
+  reportActions: {
+    display: "flex",
+    gap: 12,
+    marginBottom: 24,
+  },
+  printArea: {
+    marginTop: 20,
+  },
+  roomReport: {
+    pageBreakInside: "avoid",
+    marginBottom: 20,
   },
 };
