@@ -428,7 +428,7 @@ const fetchRecordsFromSupabase = async () => {
       return;
     }
 
-    setRecords((prev) => [...prev, newRecord]);
+    await fetchRecordsFromSupabase();
     alert("Kayıt başarıyla eklendi.");
 
     setForm((prev) => ({
