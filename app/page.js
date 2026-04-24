@@ -183,18 +183,59 @@ export default function Page() {
 
   const [studentNotes, setStudentNotes] = useState({});
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem("oda_kontrol_user");
-    const savedRecords = localStorage.getItem("oda_kontrol_records");
+useEffect(() => {
+  const savedUser = localStorage.getItem("oda_kontrol_user");
 
-    if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      setCurrentUser(parsedUser);
-      setForm((prev) => ({
-        ...prev,
-        kontrolEden: parsedUser.name,
-      }));
-    }
+  if (savedUser) {
+    const parsedUser = JSON.parse(savedUser);
+    setCurrentUser(parsedUser);
+    setForm((prev) => ({
+      ...prev,
+      kontrolEden: parsedUser.name,
+    }));
+  }
+
+  fetchRecordsFromSupabase();
+}, []);
+
+const fetchRecordsFromSupabase = async () => {
+  const { data, error } = await supabase
+    .from("oda_kontrolleri")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log("Kayıt çekme hatası:", error);
+    return;
+  }
+
+  const formattedRecords = data.map((item) => ({
+    id: item.id,
+    room: item.oda_no,
+    createdAt: item.created_at,
+    kontrolTuru: item.kontrol_turu || "-",
+    donem: item.donem || "-",
+    kontrolEden: item.kontrol_eden || "-",
+    tarih: item.tarih || "-",
+    saat: item.saat || "-",
+    odaTemizlik: item.oda_temizlik || "-",
+    odaDuzeni: item.oda_duzeni || "-",
+    yatakDuzeni: item.yatak_duzeni || "-",
+    genelTemizlik: item.genel_temizlik || "-",
+    arizaVarMi: item.ariza_var_mi || "-",
+    guvenlikDurumu: item.guvenlik_durumu || "-",
+    genelNot: item.genel_not || "",
+    temizlikAciklama: item.temizlik_aciklama || "",
+    duzenAciklama: item.duzen_aciklama || "",
+    yatakDuzeniAciklama: item.yatak_duzeni_aciklama || "",
+    genelTemizlikAciklama: item.genel_temizlik_aciklama || "",
+    arizaAciklama: item.ariza_aciklama || "",
+    guvenlikAciklama: item.guvenlik_aciklama || "",
+    students: [],
+  }));
+
+  setRecords(formattedRecords);
+};
 
     if (savedRecords) {
       setRecords(JSON.parse(savedRecords));
