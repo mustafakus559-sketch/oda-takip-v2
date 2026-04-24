@@ -9,82 +9,50 @@ const supabase = createClient(
 );
 
 const USERS = [
-  { username: "mustafa", password: "1234", name: "Mustafa Kuş", role: "admin" },
-  { username: "erhan", password: "1234", name: "Erhan Karakuş", role: "idare" },
-  { username: "yunus", password: "1234", name: "Yunus Emre Özevren", role: "idare" },
+  { username: "mustafa", password: "1234", name: "Mustafa Kuş", role: "Yönetici" },
+  { username: "erhan", password: "1234", name: "Erhan Karakuş", role: "İdare" },
+  { username: "yunus", password: "1234", name: "Yunus Emre Özevren", role: "İdare" },
 ];
 
 const STUDENTS = [
-  { ad: "TAHA EFSA", soyad: "AYDIN", oda: "101" },
-  { ad: "YUSUF", soyad: "GÜLTEKİN", oda: "101" },
-  { ad: "TAİMİA", soyad: "KİSİTU", oda: "102" },
-  { ad: "ALMAT", soyad: "DUİSEN", oda: "102" },
-  { ad: "JANBOTA", soyad: "BYERIKBOL", oda: "102" },
-  { ad: "S M", soyad: "JULKARNİNE", oda: "102" },
-  { ad: "İBRAHİM", soyad: "KAPLAN", oda: "201" },
-  { ad: "AHMAD ZIA", soyad: "MOHAMMADI", oda: "201" },
-  { ad: "YUSUF", soyad: "BAYRAQDAROV", oda: "201" },
-  { ad: "ABDULİLLOH", soyad: "HİSAİNZODA", oda: "201" },
-  { ad: "EYMEN", soyad: "MERDAN", oda: "202" },
-  { ad: "GÜNGÖR BAKİ", soyad: "YÜKSEL", oda: "202" },
-  { ad: "MUSTAFA", soyad: "ATEŞ", oda: "202" },
-  { ad: "ZEYNEL ABİDİN", soyad: "TOSUN", oda: "202" },
-  { ad: "AZIZULLAH", soyad: "MUFTI ZADA", oda: "203" },
-  { ad: "MOHAMMAD ZAYAAN", soyad: "ZEHGEER", oda: "203" },
-  { ad: "ARİMİYAO", soyad: "TCHAASANTI", oda: "203" },
-  { ad: "FAIZANULLAH", soyad: "RAHMANI", oda: "203" },
-  { ad: "TİLEKZHAN", soyad: "YESSENGABYL", oda: "204" },
-  { ad: "KANATMYRZA", soyad: "ERKİNBEK UULU", oda: "204" },
-  { ad: "TAMERLAN", soyad: "KHATSAEV", oda: "204" },
-  { ad: "ABDIASIS", soyad: "ABDULLAHI YUSUF", oda: "204" },
-  { ad: "MUHAMMED TALHA", soyad: "CEYLAN", oda: "205" },
-  { ad: "ADİL TALHA", soyad: "DEMİRAL", oda: "205" },
-  { ad: "MEHMET ENES", soyad: "DEMİRAL", oda: "205" },
-  { ad: "ÖMER FAZIL", soyad: "ORHAN", oda: "205" },
-  { ad: "CONQUERER", soyad: "CHANDİPWİSA", oda: "206" },
-  { ad: "FAOZAN", soyad: "UMA", oda: "206" },
-  { ad: "ZEYAD", soyad: "MOSA", oda: "206" },
-  { ad: "MUHAMMAD", soyad: "MUKIIBI", oda: "206" },
-  { ad: "RADWAN", soyad: "ROFİDA", oda: "207" },
-  { ad: "GHADEER ABDULAMEER", soyad: "TAHSEEN", oda: "207" },
-  { ad: "MOUGHNI", soyad: "MLAMALI MSAIDIE", oda: "207" },
-  { ad: "SHOHRUKH", soyad: "RAJABOV", oda: "207" },
-  { ad: "KHABIBULLOKH", soyad: "ABDULFATTOEV", oda: "208" },
-  { ad: "NURIDDIN ZOKIRJON UGLI", soyad: "JAKBARALIEV", oda: "208" },
-  { ad: "YOUSIF KHWAMURAD QADIR", soyad: "AL JAF", oda: "208" },
-  { ad: "HAFIZ IJAZ", soyad: "AHMED", oda: "208" },
-  { ad: "SALİH", soyad: "METİN", oda: "209" },
-  { ad: "ALPER", soyad: "ŞAHİN", oda: "209" },
-  { ad: "ENİS", soyad: "YİĞİT", oda: "209" },
-  { ad: "ENES", soyad: "YİĞİT", oda: "209" },
-  { ad: "IBRAHIM", soyad: "OKENY", oda: "210" },
-  { ad: "IDRISS", soyad: "DJAMALAD DINE", oda: "210" },
-  { ad: "MOHAMED YEHIA AHMED ALY", soyad: "EİWİS", oda: "210" },
-  { ad: "OUMAR", soyad: "ARAMA", oda: "210" },
-  { ad: "MAHAMAD WAKİL", soyad: "ANSARİ", oda: "211" },
-  { ad: "ADAN ABDI HASSAN", soyad: "ADAN ABDI HASSAN", oda: "211" },
-  { ad: "YOUSSOUF", soyad: "MOHAMED WABERİ", oda: "211" },
-  { ad: "IKLIL FATHUL AZIZ", soyad: "AZİZ", oda: "211" },
-  { ad: "ABDUL", soyad: "WAHEED", oda: "212" },
-  { ad: "MD", soyad: "OBAID", oda: "212" },
-  { ad: "AHMAD FIRDAOUS", soyad: "BİN MOHD SALEH", oda: "212" },
-  { ad: "AMMAR", soyad: "BİN MOHD SATAR", oda: "212" },
-];
+  ["TAHA EFSA","AYDIN","101"],["YUSUF","GÜLTEKİN","101"],
+  ["TAİMİA","KİSİTU","102"],["ALMAT","DUİSEN","102"],["JANBOTA","BYERIKBOL","102"],["S M","JULKARNİNE","102"],
+  ["İBRAHİM","KAPLAN","201"],["AHMAD ZIA","MOHAMMADI","201"],["YUSUF","BAYRAQDAROV","201"],["ABDULİLLOH","HİSAİNZODA","201"],
+  ["EYMEN","MERDAN","202"],["GÜNGÖR BAKİ","YÜKSEL","202"],["MUSTAFA","ATEŞ","202"],["ZEYNEL ABİDİN","TOSUN","202"],
+  ["AZIZULLAH","MUFTI ZADA","203"],["MOHAMMAD ZAYAAN","ZEHGEER","203"],["ARİMİYAO","TCHAASANTI","203"],["FAIZANULLAH","RAHMANI","203"],
+  ["TİLEKZHAN","YESSENGABYL","204"],["KANATMYRZA","ERKİNBEK UULU","204"],["TAMERLAN","KHATSAEV","204"],["ABDIASIS","ABDULLAHI YUSUF","204"],
+  ["MUHAMMED TALHA","CEYLAN","205"],["ADİL TALHA","DEMİRAL","205"],["MEHMET ENES","DEMİRAL","205"],["ÖMER FAZIL","ORHAN","205"],
+  ["CONQUERER","CHANDİPWİSA","206"],["FAOZAN","UMA","206"],["ZEYAD","MOSA","206"],["MUHAMMAD","MUKIIBI","206"],
+  ["RADWAN","ROFİDA","207"],["GHADEER ABDULAMEER","TAHSEEN","207"],["MOUGHNI","MLAMALI MSAIDIE","207"],["SHOHRUKH","RAJABOV","207"],
+  ["KHABIBULLOKH","ABDULFATTOEV","208"],["NURIDDIN ZOKIRJON UGLI","JAKBARALIEV","208"],["YOUSIF KHWAMURAD QADIR","AL JAF","208"],["HAFIZ IJAZ","AHMED","208"],
+  ["SALİH","METİN","209"],["ALPER","ŞAHİN","209"],["ENİS","YİĞİT","209"],["ENES","YİĞİT","209"],
+  ["IBRAHIM","OKENY","210"],["IDRISS","DJAMALAD DINE","210"],["MOHAMED YEHIA AHMED ALY","EİWİS","210"],["OUMAR","ARAMA","210"],
+  ["MAHAMAD WAKİL","ANSARİ","211"],["ADAN ABDI HASSAN","ADAN ABDI HASSAN","211"],["YOUSSOUF","MOHAMED WABERİ","211"],["IKLIL FATHUL AZIZ","AZİZ","211"],
+  ["ABDUL","WAHEED","212"],["MD","OBAID","212"],["AHMAD FIRDAOUS","BİN MOHD SALEH","212"],["AMMAR","BİN MOHD SATAR","212"],
+  ["ALİ OSMAN","YILDIZ","301"],["CAVİT","KARAMAN","301"],["AHMET TALHA","ÇELİKER","301"],
+  ["HUZEYFE KEMAL","BEDİRHANGİL","302"],["AHMET YASİN","YÜKSEL","302"],["ÖMER CAN","SALİCİ","302"],["MEHMET RIZA","ŞAHİN","302"],
+  ["MOHAMMED AWAL","ABDUL GANİYU","303"],["RİDWAN OLAJİDE","NAFİU","303"],["HASSAN","MOHAMED AHMED","303"],["ABDULRAHMAN","RAMADHAN","303"],
+  ["ABDOUL KHADRY","NDIAYE","304"],["ADAM","BOTTOM","304"],["İBRAHİM","AYIKİ RAFIU","304"],["JUNAID OMAR","MWACHANDE","304"],
+  ["ABDUL BASHIR","NOOR","305"],["UMAR","ABDIBALIEV","305"],["MOHAMED ABDELLAHİ","BEZEİD","305"],["MAMADU ALPHA","BAH","305"],
+  ["MESUD MUBAREK","NUREDDİN","306"],["MOUSSA","TRAORE","306"],["AHAMET","BADAMASSI ELHADJI AOUTA","306"],["ABDOURAHMANE AG İNAZOUM","CİSSE","306"],
+  ["MOHAMAD","ALHLIBI","307"],["MUHAMMED","ASHOUR","307"],["ASGAT","SAMİGULLİN","307"],["SAİD","CERRAH","307"],
+  ["AHMET YUSUF","GÖÇER","308"],["İBRAHİM","GENÇ","308"],["MUSTAFA","ÖZÖGET","308"],["SEYYİD AHMET","KILIÇARSLAN","308"],
+  ["ADİLET","MUSSALİMOV","309"],["EMİL","KHAİROYEV","309"],["JAD","ABOU ALİ","309"],["HUSSAM","ALHADDAD","309"],
+  ["TEMİR POLAT","ALANKUŞ","310"],["ÖMER FARUK","BOZ","310"],
+  ["MOHAMED ALIEU","BAH","311"],["ADAMA","DEME","311"],["IBRAHIM ABDUMALIK","ABDUKERIM","311"],["MOUHAMED","DIOP","311"],
+  ["MUTTEIULLAH","YOUSUFI","312"],["MOHAMED","ALİ MOHAMED","312"],["MOHAMAD","NORAIMAN","312"],["MOHAMED FATHİ ARABİ","KAFO","312"],
+  ["HAMİT","SEYİTMEHMETOĞLU","313"],["AMINUL","ISLAM","313"],["HASAN","DIAB","313"],["ELMIR","SADIGOV","313"],
+].map(([ad, soyad, oda]) => ({ ad, soyad, oda }));
 
-const ROOM_OPTIONS = [...new Set(STUDENTS.map((s) => s.oda))].sort();
+const ROOM_OPTIONS = ["101","102","201","202","203","204","205","206","207","208","209","210","211","212","301","302","303","304","305","306","307","308","309","310","311","312","313"];
 
-function today() {
-  return new Date().toLocaleDateString("tr-TR");
-}
-
-function nowTime() {
-  return new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
-}
+const isoDate = () => new Date().toISOString().split("T")[0];
+const timeNow = () => new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
 
 export default function Page() {
   const [user, setUser] = useState(null);
   const [login, setLogin] = useState({ username: "", password: "" });
-  const [tab, setTab] = useState("yeni");
+  const [menu, setMenu] = useState("ana");
   const [room, setRoom] = useState("101");
   const [records, setRecords] = useState([]);
 
@@ -106,34 +74,14 @@ export default function Page() {
     guvenlikAciklama: "",
   });
 
-  const [studentNotes, setStudentNotes] = useState({});
-
-  const roomStudents = useMemo(
-    () => STUDENTS.filter((s) => s.oda === room),
-    [room]
-  );
+  const roomStudents = useMemo(() => STUDENTS.filter((s) => s.oda === room), [room]);
+  const roomRecords = useMemo(() => records.filter((r) => r.room === room), [records, room]);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("oda_kontrol_user");
-    if (savedUser) setUser(JSON.parse(savedUser));
+    const saved = localStorage.getItem("oda_kontrol_user");
+    if (saved) setUser(JSON.parse(saved));
     fetchRecords();
   }, []);
-
-  useEffect(() => {
-    const obj = {};
-    roomStudents.forEach((s) => {
-      const key = `${s.oda}-${s.ad}-${s.soyad}`;
-      obj[key] = {
-        ogrenciNotu: "",
-        saglikDurumu: "",
-        ozelDurumVarMi: "yok",
-        ozelDurumAciklama: "",
-        talepVarMi: "yok",
-        talepAciklama: "",
-      };
-    });
-    setStudentNotes(obj);
-  }, [roomStudents]);
 
   const fetchRecords = async () => {
     const { data, error } = await supabase
@@ -142,342 +90,283 @@ export default function Page() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.log("KAYIT ÇEKME HATASI:", error);
+      console.log(error);
       return;
     }
 
-    setRecords(
-      data.map((r) => ({
-        id: r.id,
-        room: r.oda_no,
-        createdAt: r.created_at,
-        kontrolEden: r.kontrol_eden || "-",
-        tarih: r.tarih || "-",
-        saat: r.saat || "-",
-        kontrolTuru: r.kontrol_turu || "-",
-        donem: r.donem || "-",
-        genelNot: r.genel_not || "",
-        odaTemizlik: r.oda_temizlik || "-",
-        odaDuzeni: r.oda_duzeni || "-",
-        yatakDuzeni: r.yatak_duzeni || "-",
-        genelTemizlik: r.genel_temizlik || "-",
-        arizaVarMi: r.ariza_var_mi || "-",
-        guvenlikDurumu: r.guvenlik_durumu || "-",
-      }))
-    );
+    setRecords((data || []).map((r) => ({
+      id: r.id,
+      room: r.oda_no,
+      createdAt: r.created_at,
+      kontrolEden: r.kontrol_eden || "-",
+      tarih: r.tarih || "-",
+      saat: r.saat || "-",
+      kontrolTuru: r.kontrol_turu || "-",
+      donem: r.donem || "-",
+      genelNot: r.genel_not || "",
+      odaTemizlik: r.oda_temizlik || "-",
+      odaDuzeni: r.oda_duzeni || "-",
+      yatakDuzeni: r.yatak_duzeni || "-",
+      genelTemizlik: r.genel_temizlik || "-",
+      arizaVarMi: r.ariza_var_mi || "-",
+      guvenlikDurumu: r.guvenlik_durumu || "-",
+    })));
   };
 
-  const handleLogin = () => {
+  const doLogin = () => {
     const found = USERS.find(
-      (u) =>
-        u.username === login.username.trim().toLowerCase() &&
-        u.password === login.password
+      (u) => u.username === login.username.trim().toLowerCase() && u.password === login.password
     );
-
-    if (!found) {
-      alert("Kullanıcı adı veya şifre hatalı.");
-      return;
-    }
-
+    if (!found) return alert("Kullanıcı adı veya şifre hatalı.");
     setUser(found);
     localStorage.setItem("oda_kontrol_user", JSON.stringify(found));
   };
 
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem("oda_kontrol_user");
     setUser(null);
   };
 
-  const updateForm = (field, value) => {
-    setForm((p) => ({ ...p, [field]: value }));
-  };
+  const update = (field, value) => setForm((p) => ({ ...p, [field]: value }));
 
-  const updateStudent = (key, field, value) => {
-    setStudentNotes((p) => ({
-      ...p,
-      [key]: { ...p[key], [field]: value },
-    }));
-  };
+  const save = async () => {
+    const { error } = await supabase.from("oda_kontrolleri").insert([{
+      oda_no: room,
+      kontrol_eden: user?.name || "-",
+      kontrol_turu: form.kontrolTuru,
+      donem: form.donem,
+      tarih: isoDate(),
+      saat: timeNow(),
+      genel_not: form.genelNot,
+      oda_temizlik: form.odaTemizlik,
+      oda_duzeni: form.odaDuzeni,
+      yatak_duzeni: form.yatakDuzeni,
+      genel_temizlik: form.genelTemizlik,
+      ariza_var_mi: form.arizaVarMi,
+      guvenlik_durumu: form.guvenlikDurumu,
+      ariza_aciklama: form.arizaVarMi === "var" ? form.arizaAciklama : null,
+      guvenlik_aciklama: form.guvenlikDurumu === "var" ? form.guvenlikAciklama : null,
+      temizlik_aciklama: form.odaTemizlik !== "iyi" ? form.temizlikAciklama : null,
+      duzen_aciklama: form.odaDuzeni !== "iyi" ? form.duzenAciklama : null,
+      yatak_duzeni_aciklama: form.yatakDuzeni !== "iyi" ? form.yatakDuzeniAciklama : null,
+      genel_temizlik_aciklama: form.genelTemizlik !== "iyi" ? form.genelTemizlikAciklama : null,
+    }]);
 
-  const handleSave = async () => {
-    const { error } = await supabase.from("oda_kontrolleri").insert([
-      {
-        oda_no: room,
-        kontrol_eden: user?.name || "-",
-        kontrol_turu: form.kontrolTuru,
-        donem: form.donem,
-        tarih: today(),
-        saat: nowTime(),
-
-        genel_not: form.genelNot,
-        oda_temizlik: form.odaTemizlik,
-        oda_duzeni: form.odaDuzeni,
-        yatak_duzeni: form.yatakDuzeni,
-        genel_temizlik: form.genelTemizlik,
-        ariza_var_mi: form.arizaVarMi,
-        guvenlik_durumu: form.guvenlikDurumu,
-
-        ariza_aciklama: form.arizaVarMi === "var" ? form.arizaAciklama : null,
-        guvenlik_aciklama: form.guvenlikDurumu === "var" ? form.guvenlikAciklama : null,
-        temizlik_aciklama: form.odaTemizlik !== "iyi" ? form.temizlikAciklama : null,
-        duzen_aciklama: form.odaDuzeni !== "iyi" ? form.duzenAciklama : null,
-        yatak_duzeni_aciklama: form.yatakDuzeni !== "iyi" ? form.yatakDuzeniAciklama : null,
-        genel_temizlik_aciklama: form.genelTemizlik !== "iyi" ? form.genelTemizlikAciklama : null,
-      },
-    ]);
-
-    if (error) {
-      console.log("SUPABASE HATA:", error);
-      alert("Hata: " + error.message);
-      return;
-    }
+    if (error) return alert("Hata: " + error.message);
 
     alert("Kayıt başarıyla kaydedildi.");
     await fetchRecords();
-    setTab("kayitlar");
+    setMenu("kayitlar");
   };
 
   if (!user) {
     return (
       <div style={styles.loginPage}>
-        <div style={styles.loginLeft}>
-          <div style={styles.brandMain}>TDV YURTLAR</div>
-          <div style={styles.brandSub}>Oda Kontrol ve Takip Sistemi</div>
-          <div style={styles.brandText}>
-            Haftalık ve aylık oda kontrolleri için yetkili personel giriş ekranı.
-          </div>
+        <div style={styles.loginHero}>
+          <div style={styles.logoText}>TDV YURTLAR</div>
+          <h1>Oda Kontrol ve Takip Sistemi</h1>
+          <p>Türkiye Diyanet Vakfı yurtlarında oda kontrol, takip ve raporlama süreçleri için hazırlanmıştır.</p>
         </div>
-
         <div style={styles.loginCard}>
           <h2>Personel Girişi</h2>
-          <input
-            style={styles.input}
-            placeholder="Kullanıcı adı"
-            value={login.username}
-            onChange={(e) => setLogin({ ...login, username: e.target.value })}
-          />
-          <input
-            style={styles.input}
-            type="password"
-            placeholder="Şifre"
-            value={login.password}
-            onChange={(e) => setLogin({ ...login, password: e.target.value })}
-          />
-          <button style={styles.primaryButton} onClick={handleLogin}>
-            Giriş Yap
-          </button>
-          <div style={styles.demoInfo}>
-            mustafa / 1234<br />
-            erhan / 1234<br />
-            yunus / 1234
-          </div>
+          <input style={styles.input} placeholder="Kullanıcı adı" value={login.username} onChange={(e) => setLogin({ ...login, username: e.target.value })} />
+          <input style={styles.input} type="password" placeholder="Şifre" value={login.password} onChange={(e) => setLogin({ ...login, password: e.target.value })} />
+          <button style={styles.primaryButton} onClick={doLogin}>Giriş Yap</button>
+          <div style={styles.help}>mustafa / 1234 · erhan / 1234 · yunus / 1234</div>
         </div>
       </div>
     );
   }
 
-  const roomHistory = records.filter((r) => r.room === room);
-
   return (
-    <div style={styles.page}>
-      <div style={styles.topCard}>
-        <div>
-          <div style={styles.pageTitle}>TDV Oda Kontrol Sistemi</div>
-          <div style={styles.pageSubTitle}>
-            Hoş geldiniz, {user.name} ({user.role})
-          </div>
-        </div>
-        <div style={styles.topActions}>
-          <button style={tab === "yeni" ? styles.tabActive : styles.tabButton} onClick={() => setTab("yeni")}>Yeni Kontrol</button>
-          <button style={tab === "gecmis" ? styles.tabActive : styles.tabButton} onClick={() => setTab("gecmis")}>Oda Geçmişi</button>
-          <button style={tab === "kayitlar" ? styles.tabActive : styles.tabButton} onClick={() => setTab("kayitlar")}>Kayıtlar</button>
-          <button style={styles.logoutButton} onClick={handleLogout}>Çıkış</button>
-        </div>
-      </div>
+    <div style={styles.app}>
+      <aside style={styles.sidebar}>
+        <div style={styles.sideLogo}>TDV</div>
+        <div style={styles.sideTitle}>Oda Takip</div>
 
-      {tab === "yeni" && (
-        <div style={styles.grid}>
+        <Menu label="Ana Sayfa" id="ana" menu={menu} setMenu={setMenu} />
+        <Menu label="Yeni Kontrol" id="yeni" menu={menu} setMenu={setMenu} />
+        <Menu label="Oda Geçmişi" id="gecmis" menu={menu} setMenu={setMenu} />
+        <Menu label="Kayıtlar" id="kayitlar" menu={menu} setMenu={setMenu} />
+        <Menu label="Öğrenci Listesi" id="ogrenciler" menu={menu} setMenu={setMenu} />
+        <Menu label="Raporlama" id="rapor" menu={menu} setMenu={setMenu} />
+
+        <button style={styles.logout} onClick={logout}>Çıkış Yap</button>
+      </aside>
+
+      <main style={styles.main}>
+        <div style={styles.header}>
           <div>
+            <h1>TDV Oda Kontrol Sistemi</h1>
+            <p>Hoş geldiniz, {user.name} ({user.role})</p>
+          </div>
+          <button style={styles.homeButton} onClick={() => setMenu("ana")}>Ana Sayfa</button>
+        </div>
+
+        {menu === "ana" && (
+          <div style={styles.cardsGrid}>
+            <Info title="Toplam Oda" value={ROOM_OPTIONS.length} />
+            <Info title="Toplam Öğrenci" value={STUDENTS.length} />
+            <Info title="Toplam Kontrol" value={records.length} />
+            <Info title="Takip Gerektiren" value={records.filter(r => r.arizaVarMi === "var" || r.guvenlikDurumu === "var").length} />
+          </div>
+        )}
+
+        {menu === "yeni" && (
+          <div style={styles.layout}>
             <div style={styles.card}>
               <h2>Oda Seçimi</h2>
               <select style={styles.input} value={room} onChange={(e) => setRoom(e.target.value)}>
                 {ROOM_OPTIONS.map((r) => <option key={r} value={r}>Oda {r}</option>)}
               </select>
-              <div style={styles.summaryBox}>
-                Toplam Kontrol: {roomHistory.length}
-              </div>
+              <p><b>Bu odadaki öğrenci:</b> {roomStudents.length}</p>
+              <p><b>Bu oda kontrol sayısı:</b> {roomRecords.length}</p>
             </div>
 
-            <div style={styles.card}>
-              <h2>Önceki Kontrol Özeti</h2>
-              {roomHistory.length === 0 ? "Bu oda için henüz kayıt yok." : (
-                <div>
-                  <strong>{roomHistory[0].tarih}</strong> - {roomHistory[0].kontrolEden}<br />
-                  Temizlik: {roomHistory[0].odaTemizlik}<br />
-                  Düzen: {roomHistory[0].odaDuzeni}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div>
             <div style={styles.card}>
               <h2>Yeni Oda Kontrolü</h2>
-              <div style={styles.twoCol}>
-                <div>
-                  <label style={styles.label}>Kontrol Türü</label>
-                  <select style={styles.input} value={form.kontrolTuru} onChange={(e) => updateForm("kontrolTuru", e.target.value)}>
-                    <option>Haftalık</option>
-                    <option>Aylık</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={styles.label}>Dönem</label>
-                  <select style={styles.input} value={form.donem} onChange={(e) => updateForm("donem", e.target.value)}>
-                    <option>1. Dönem</option>
-                    <option>2. Dönem</option>
-                  </select>
-                </div>
+
+              <div style={styles.two}>
+                <Select label="Kontrol Türü" value={form.kontrolTuru} onChange={(v) => update("kontrolTuru", v)} options={["Haftalık","Aylık"]} />
+                <Select label="Dönem" value={form.donem} onChange={(v) => update("donem", v)} options={["1. Dönem","2. Dönem"]} />
               </div>
-            </div>
 
-            <div style={styles.card}>
-              <h2>Oda Genel Değerlendirmesi</h2>
-              <Field title="Oda Temizliği" value={form.odaTemizlik} onChange={(v) => updateForm("odaTemizlik", v)} />
-              {form.odaTemizlik !== "iyi" && <Text value={form.temizlikAciklama} onChange={(v) => updateForm("temizlikAciklama", v)} placeholder="Temizlik açıklaması" />}
+              <h3>Oda Genel Değerlendirmesi</h3>
+              <Field label="Oda Temizliği" value={form.odaTemizlik} onChange={(v) => update("odaTemizlik", v)} />
+              {form.odaTemizlik !== "iyi" && <Text placeholder="Temizlik açıklaması" value={form.temizlikAciklama} onChange={(v) => update("temizlikAciklama", v)} />}
 
-              <Field title="Oda Düzeni" value={form.odaDuzeni} onChange={(v) => updateForm("odaDuzeni", v)} />
-              {form.odaDuzeni !== "iyi" && <Text value={form.duzenAciklama} onChange={(v) => updateForm("duzenAciklama", v)} placeholder="Düzen açıklaması" />}
+              <Field label="Oda Düzeni" value={form.odaDuzeni} onChange={(v) => update("odaDuzeni", v)} />
+              {form.odaDuzeni !== "iyi" && <Text placeholder="Düzen açıklaması" value={form.duzenAciklama} onChange={(v) => update("duzenAciklama", v)} />}
 
-              <Field title="Yatak Düzeni" value={form.yatakDuzeni} onChange={(v) => updateForm("yatakDuzeni", v)} />
-              {form.yatakDuzeni !== "iyi" && <Text value={form.yatakDuzeniAciklama} onChange={(v) => updateForm("yatakDuzeniAciklama", v)} placeholder="Yatak düzeni açıklaması" />}
+              <Field label="Yatak Düzeni" value={form.yatakDuzeni} onChange={(v) => update("yatakDuzeni", v)} />
+              {form.yatakDuzeni !== "iyi" && <Text placeholder="Yatak düzeni açıklaması" value={form.yatakDuzeniAciklama} onChange={(v) => update("yatakDuzeniAciklama", v)} />}
 
-              <Field title="Genel Temizlik" value={form.genelTemizlik} onChange={(v) => updateForm("genelTemizlik", v)} />
-              {form.genelTemizlik !== "iyi" && <Text value={form.genelTemizlikAciklama} onChange={(v) => updateForm("genelTemizlikAciklama", v)} placeholder="Genel temizlik açıklaması" />}
+              <Field label="Genel Temizlik" value={form.genelTemizlik} onChange={(v) => update("genelTemizlik", v)} />
+              {form.genelTemizlik !== "iyi" && <Text placeholder="Genel temizlik açıklaması" value={form.genelTemizlikAciklama} onChange={(v) => update("genelTemizlikAciklama", v)} />}
 
-              <YesNo title="Odada Arıza Var mı?" value={form.arizaVarMi} onChange={(v) => updateForm("arizaVarMi", v)} />
-              {form.arizaVarMi === "var" && <Text value={form.arizaAciklama} onChange={(v) => updateForm("arizaAciklama", v)} placeholder="Arıza açıklaması" />}
+              <YesNo label="Odada Arıza Var mı?" value={form.arizaVarMi} onChange={(v) => update("arizaVarMi", v)} />
+              {form.arizaVarMi === "var" && <Text placeholder="Arıza açıklaması" value={form.arizaAciklama} onChange={(v) => update("arizaAciklama", v)} />}
 
-              <YesNo title="Güvenlik Açısından Dikkat Gerektiren Durum Var mı?" value={form.guvenlikDurumu} onChange={(v) => updateForm("guvenlikDurumu", v)} />
-              {form.guvenlikDurumu === "var" && <Text value={form.guvenlikAciklama} onChange={(v) => updateForm("guvenlikAciklama", v)} placeholder="Güvenlik açıklaması" />}
+              <YesNo label="Güvenlik Açısından Dikkat Gerektiren Durum Var mı?" value={form.guvenlikDurumu} onChange={(v) => update("guvenlikDurumu", v)} />
+              {form.guvenlikDurumu === "var" && <Text placeholder="Güvenlik açıklaması" value={form.guvenlikAciklama} onChange={(v) => update("guvenlikAciklama", v)} />}
 
-              <Text value={form.genelNot} onChange={(v) => updateForm("genelNot", v)} placeholder="Genel not" />
-            </div>
+              <Text placeholder="Genel not" value={form.genelNot} onChange={(v) => update("genelNot", v)} />
 
-            <div style={styles.card}>
-              <h2>Odadaki Öğrenciler</h2>
-              {roomStudents.map((s) => {
-                const key = `${s.oda}-${s.ad}-${s.soyad}`;
-                const n = studentNotes[key] || {};
-                return (
-                  <div key={key} style={styles.studentCard}>
-                    <h3>{s.ad} {s.soyad}</h3>
-                    <Text value={n.ogrenciNotu || ""} onChange={(v) => updateStudent(key, "ogrenciNotu", v)} placeholder="Öğrenci notu" />
-                    <input style={styles.input} placeholder="Sağlık durumu" value={n.saglikDurumu || ""} onChange={(e) => updateStudent(key, "saglikDurumu", e.target.value)} />
-                    <YesNo title="Özel Durum Var mı?" value={n.ozelDurumVarMi || "yok"} onChange={(v) => updateStudent(key, "ozelDurumVarMi", v)} />
-                    {n.ozelDurumVarMi === "var" && <Text value={n.ozelDurumAciklama || ""} onChange={(v) => updateStudent(key, "ozelDurumAciklama", v)} placeholder="Özel durum açıklaması" />}
-                    <YesNo title="İstek / Öneri / Şikayet Var mı?" value={n.talepVarMi || "yok"} onChange={(v) => updateStudent(key, "talepVarMi", v)} />
-                    {n.talepVarMi === "var" && <Text value={n.talepAciklama || ""} onChange={(v) => updateStudent(key, "talepAciklama", v)} placeholder="Talep açıklaması" />}
-                  </div>
-                );
-              })}
+              <h3>Odadaki Öğrenciler</h3>
+              {roomStudents.map((s) => (
+                <div style={styles.student} key={`${s.ad}-${s.soyad}`}>
+                  {s.ad} {s.soyad}
+                </div>
+              ))}
 
-              <button style={styles.primaryButton} onClick={handleSave}>Kaydet</button>
+              <button style={styles.primaryButton} onClick={save}>Kaydet</button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {tab === "gecmis" && (
-        <div style={styles.card}>
-          <h2>Oda {room} Geçmişi</h2>
-          {roomHistory.length === 0 ? "Kayıt yok." : roomHistory.map((r) => (
-            <div style={styles.historyCard} key={r.id}>
-              <strong>{r.tarih} - {r.saat}</strong><br />
-              Kontrol Eden: {r.kontrolEden}<br />
-              Tür: {r.kontrolTuru}<br />
-              Dönem: {r.donem}<br />
-              Genel Not: {r.genelNot || "-"}
-            </div>
-          ))}
-        </div>
-      )}
+        {menu === "gecmis" && (
+          <div style={styles.card}>
+            <h2>Oda Geçmişi</h2>
+            <select style={styles.input} value={room} onChange={(e) => setRoom(e.target.value)}>
+              {ROOM_OPTIONS.map((r) => <option key={r} value={r}>Oda {r}</option>)}
+            </select>
+            {roomRecords.length === 0 ? <p>Kayıt yok.</p> : roomRecords.map((r) => <Record key={r.id} r={r} />)}
+          </div>
+        )}
 
-      {tab === "kayitlar" && (
-        <div style={styles.card}>
-          <h2>Tüm Kayıtlar</h2>
-          {records.length === 0 ? "Kayıt yok." : records.map((r) => (
-            <div style={styles.historyCard} key={r.id}>
-              <strong>Oda {r.room}</strong> - {r.tarih} - {r.saat}<br />
-              Kontrol Eden: {r.kontrolEden}<br />
-              Genel Not: {r.genelNot || "-"}
-            </div>
-          ))}
-        </div>
-      )}
+        {menu === "kayitlar" && (
+          <div style={styles.card}>
+            <h2>Tüm Kayıtlar</h2>
+            {records.length === 0 ? <p>Kayıt yok.</p> : records.map((r) => <Record key={r.id} r={r} />)}
+          </div>
+        )}
+
+        {menu === "ogrenciler" && (
+          <div style={styles.card}>
+            <h2>Öğrenci Listesi</h2>
+            {ROOM_OPTIONS.map((oda) => (
+              <div key={oda} style={styles.roomBlock}>
+                <h3>Oda {oda}</h3>
+                {STUDENTS.filter(s => s.oda === oda).map(s => <div key={s.ad+s.soyad}>• {s.ad} {s.soyad}</div>)}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {menu === "rapor" && (
+          <div style={styles.card}>
+            <h2>Raporlama</h2>
+            <p><b>Toplam kayıt:</b> {records.length}</p>
+            <p><b>Arıza bildirilen kayıt:</b> {records.filter(r => r.arizaVarMi === "var").length}</p>
+            <p><b>Güvenlik uyarısı olan kayıt:</b> {records.filter(r => r.guvenlikDurumu === "var").length}</p>
+            <p><b>Orta/Kötü temizlik kaydı:</b> {records.filter(r => r.odaTemizlik === "orta" || r.odaTemizlik === "kotu").length}</p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
 
-function Field({ title, value, onChange }) {
+function Menu({ label, id, menu, setMenu }) {
+  return <button style={menu === id ? styles.menuActive : styles.menuButton} onClick={() => setMenu(id)}>{label}</button>;
+}
+
+function Info({ title, value }) {
+  return <div style={styles.info}><div>{title}</div><b>{value}</b></div>;
+}
+
+function Record({ r }) {
   return (
-    <>
-      <label style={styles.label}>{title}</label>
-      <select style={styles.input} value={value} onChange={(e) => onChange(e.target.value)}>
-        <option value="iyi">İyi</option>
-        <option value="orta">Orta</option>
-        <option value="kotu">Kötü</option>
-      </select>
-    </>
+    <div style={styles.record}>
+      <b>Oda {r.room}</b> — {r.tarih} {r.saat}<br />
+      Kontrol Eden: {r.kontrolEden}<br />
+      Temizlik: {r.odaTemizlik} | Düzen: {r.odaDuzeni} | Arıza: {r.arizaVarMi}<br />
+      Not: {r.genelNot || "-"}
+    </div>
   );
 }
 
-function YesNo({ title, value, onChange }) {
-  return (
-    <>
-      <label style={styles.label}>{title}</label>
-      <select style={styles.input} value={value} onChange={(e) => onChange(e.target.value)}>
-        <option value="yok">Yok</option>
-        <option value="var">Var</option>
-      </select>
-    </>
-  );
+function Select({ label, value, onChange, options }) {
+  return <><label>{label}</label><select style={styles.input} value={value} onChange={(e) => onChange(e.target.value)}>{options.map(o => <option key={o}>{o}</option>)}</select></>;
+}
+
+function Field({ label, value, onChange }) {
+  return <Select label={label} value={value} onChange={onChange} options={["iyi","orta","kotu"]} />;
+}
+
+function YesNo({ label, value, onChange }) {
+  return <Select label={label} value={value} onChange={onChange} options={["yok","var"]} />;
 }
 
 function Text({ value, onChange, placeholder }) {
-  return (
-    <textarea
-      style={styles.textarea}
-      value={value}
-      placeholder={placeholder}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  );
+  return <textarea style={styles.textarea} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />;
 }
 
 const styles = {
-  loginPage: { minHeight: "100vh", background: "#eef2f6", display: "grid", gridTemplateColumns: "1fr 1fr", padding: 32, gap: 24 },
-  loginLeft: { background: "#0d2d6c", color: "#fff", borderRadius: 24, padding: 48, display: "flex", flexDirection: "column", justifyContent: "center" },
-  brandMain: { fontSize: 56, fontWeight: 800 },
-  brandSub: { fontSize: 28, fontWeight: 700, marginTop: 16 },
-  brandText: { marginTop: 24, fontSize: 18, lineHeight: 1.6 },
-  loginCard: { background: "#fff", borderRadius: 24, padding: 36, alignSelf: "center" },
-  page: { minHeight: "100vh", background: "#eef2f6", padding: 24 },
-  topCard: { background: "#fff", borderRadius: 22, padding: 28, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 },
-  pageTitle: { fontSize: 34, fontWeight: 800, color: "#0d2d6c" },
-  pageSubTitle: { color: "#667085", marginTop: 8 },
-  topActions: { display: "flex", gap: 10 },
-  tabButton: { padding: "12px 18px", borderRadius: 12, border: "1px solid #ddd", background: "#fff", cursor: "pointer" },
-  tabActive: { padding: "12px 18px", borderRadius: 12, border: "none", background: "#0d2d6c", color: "#fff", cursor: "pointer" },
-  logoutButton: { padding: "12px 18px", borderRadius: 12, border: "none", background: "#ef4444", color: "#fff", cursor: "pointer" },
-  grid: { display: "grid", gridTemplateColumns: "360px 1fr", gap: 24 },
-  card: { background: "#fff", borderRadius: 22, padding: 24, marginBottom: 24 },
-  input: { width: "100%", padding: 14, borderRadius: 12, border: "1px solid #d0d5dd", marginBottom: 14, boxSizing: "border-box" },
-  textarea: { width: "100%", minHeight: 90, padding: 14, borderRadius: 12, border: "1px solid #d0d5dd", marginBottom: 14, boxSizing: "border-box" },
-  label: { display: "block", fontWeight: 700, marginBottom: 8 },
-  primaryButton: { padding: "14px 22px", borderRadius: 12, border: "none", background: "#0d2d6c", color: "#fff", cursor: "pointer", fontWeight: 700 },
-  summaryBox: { background: "#f8fafc", borderRadius: 14, padding: 16 },
-  studentCard: { border: "1px solid #eee", borderRadius: 16, padding: 16, marginBottom: 16 },
-  historyCard: { border: "1px solid #eee", borderRadius: 16, padding: 16, marginBottom: 14, lineHeight: 1.8 },
-  demoInfo: { marginTop: 18, background: "#f8fafc", borderRadius: 14, padding: 14, lineHeight: 1.8 },
+  loginPage: { minHeight: "100vh", display: "grid", gridTemplateColumns: "1.2fr .8fr", background: "#eef2f6", padding: 36, gap: 28 },
+  loginHero: { background: "linear-gradient(135deg,#082b6f,#0d47a1)", color: "white", borderRadius: 28, padding: 54, display: "flex", flexDirection: "column", justifyContent: "center" },
+  logoText: { fontSize: 58, fontWeight: 900 },
+  loginCard: { background: "white", borderRadius: 28, padding: 38, alignSelf: "center", boxShadow: "0 15px 40px rgba(0,0,0,.12)" },
+  app: { minHeight: "100vh", display: "flex", background: "#eef2f6" },
+  sidebar: { width: 260, background: "#082b6f", color: "white", padding: 24, position: "fixed", top: 0, bottom: 0, left: 0 },
+  sideLogo: { fontSize: 42, fontWeight: 900, color: "#f59e0b" },
+  sideTitle: { marginBottom: 24, fontSize: 18 },
+  menuButton: { width: "100%", padding: 14, marginBottom: 10, border: 0, borderRadius: 12, background: "rgba(255,255,255,.12)", color: "white", textAlign: "left", cursor: "pointer" },
+  menuActive: { width: "100%", padding: 14, marginBottom: 10, border: 0, borderRadius: 12, background: "#f59e0b", color: "white", textAlign: "left", fontWeight: 800, cursor: "pointer" },
+  logout: { width: "100%", padding: 14, marginTop: 20, border: 0, borderRadius: 12, background: "#ef4444", color: "white", cursor: "pointer" },
+  main: { marginLeft: 260, padding: 28, width: "calc(100% - 260px)" },
+  header: { background: "white", borderRadius: 24, padding: 28, marginBottom: 24, display: "flex", justifyContent: "space-between", boxShadow: "0 8px 25px rgba(0,0,0,.08)" },
+  homeButton: { padding: "12px 18px", borderRadius: 12, border: 0, background: "#082b6f", color: "white", cursor: "pointer" },
+  layout: { display: "grid", gridTemplateColumns: "330px 1fr", gap: 24 },
+  card: { background: "white", borderRadius: 24, padding: 26, marginBottom: 24, boxShadow: "0 8px 25px rgba(0,0,0,.08)" },
+  input: { width: "100%", padding: 14, margin: "8px 0 14px", borderRadius: 12, border: "1px solid #d0d5dd", boxSizing: "border-box" },
+  textarea: { width: "100%", minHeight: 90, padding: 14, margin: "8px 0 14px", borderRadius: 12, border: "1px solid #d0d5dd", boxSizing: "border-box" },
+  primaryButton: { padding: "14px 22px", border: 0, borderRadius: 12, background: "#082b6f", color: "white", fontWeight: 800, cursor: "pointer" },
+  help: { marginTop: 16, color: "#667085" },
+  two: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 },
+  student: { padding: 12, background: "#f8fafc", borderRadius: 12, marginBottom: 8, fontWeight: 700 },
+  record: { padding: 16, border: "1px solid #e5e7eb", borderRadius: 16, marginBottom: 12, lineHeight: 1.8 },
+  roomBlock: { padding: 16, border: "1px solid #e5e7eb", borderRadius: 16, marginBottom: 12 },
+  cardsGrid: { display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 },
+  info: { background: "white", borderRadius: 22, padding: 24, boxShadow: "0 8px 25px rgba(0,0,0,.08)", fontSize: 18 },
 };
